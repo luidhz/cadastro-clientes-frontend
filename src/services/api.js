@@ -47,14 +47,22 @@ export function deleteResource(sectionKey, id) {
   })
 }
 
-export function searchResource(sectionKey, term) {
+export async function searchResource(sectionKey, term) {
   const cleanTerm = term.trim()
 
   if (sectionKey === 'clientes' && cleanTerm.includes('@')) {
     return apiRequest(`/clientes/buscar?email=${encodeURIComponent(cleanTerm)}`)
   }
 
-  if (sectionKey === 'produtos' && Number.isNaN(Number(cleanTerm))) {
+  if (sectionKey === 'produtos') {
+    if (!Number.isNaN(Number(cleanTerm))) {
+      try {
+        return await apiRequest(`/produtos/${cleanTerm}`)
+      } catch {
+        return apiRequest(`/produtos/buscar?codigo-de-barras=${encodeURIComponent(cleanTerm)}`)
+      }
+    }
+
     return apiRequest(`/produtos/buscar?codigo-de-barras=${encodeURIComponent(cleanTerm)}`)
   }
 
