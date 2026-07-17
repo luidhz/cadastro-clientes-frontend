@@ -1,122 +1,257 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
+import { Dashboard } from './components/Dashboard'
+import { DataTable } from './components/DataTable'
+import { Message } from './components/Message'
+import { ResourceForm } from './components/ResourceForm'
+import { SearchPanel } from './components/SearchPanel'
+import { WorkspaceHeader } from './components/WorkspaceHeader'
+import { INITIAL_FORMS, SECTIONS } from './constants/sections'
+import {
+  createResource,
+  deleteResource,
+  listResources,
+  searchResource,
+  updateResource,
+} from './services/api'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeSection, setActiveSection] = useState('clientes')
+  const [records, setRecords] = useState({
+    clientes: [],
+    produtos: [],
+    compras: [],
+  })
+  const [forms, setForms] = useState(INITIAL_FORMS)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [message, setMessage] = useState('')
+  const [editingRecord, setEditingRecord] = useState(null)
+
+  const currentSection = SECTIONS[activeSection]
+
+  const stats = useMemo(
+    () => ({
+      clientes: records.clientes.length,
+      produtos: records.produtos.length,
+      compras: records.compras.length,
+    }),
+    [records],
+  )
+
+  async function loadSection(sectionKey = activeSection) {
+    setLoading(true)
+    setMessage('')
+
+    try {
+      const items = await listResources(sectionKey)
+      setRecords((current) => ({ ...current, [sectionKey]: items }))
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    let isMounted = true
+
+    Promise.all([
+      listResources('clientes'),
+      listResources('produtos'),
+      listResources('compras'),
+    ])
+      .then(([clientes, produtos, compras]) => {
+        if (isMounted) {
+          setRecords({ clientes, produtos, compras })
+        }
+      })
+      .catch((error) => {
+        if (isMounted) {
+          setMessage(error.message)
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  function handleSectionChange(sectionKey) {
+    setActiveSection(sectionKey)
+    setSearchTerm('')
+    setMessage('')
+    setEditingRecord(null)
+  }
+
+  function handleFormChange(field, value) {
+    setForms((current) => ({
+      ...current,
+      [activeSection]: {
+        ...current[activeSection],
+        [field]: value,
+      },
+    }))
+  }
+
+  async function handleSubmitForm(event) {
+    event.preventDefault()
+    setLoading(true)
+    setMessage('')
+
+    try {
+      if (editingRecord) {
+        await updateResource(activeSection, editingRecord.id, forms[activeSection])
+      } else {
+        await createResource(activeSection, forms[activeSection])
+      }
+
+      setForms((current) => ({
+        ...current,
+        [activeSection]: INITIAL_FORMS[activeSection],
+      }))
+      setEditingRecord(null)
+      await loadSection(activeSection)
+      setMessage(editingRecord ? 'Registro atualizado com sucesso.' : 'Registro cadastrado com sucesso.')
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function handleEdit(item) {
+    setEditingRecord(item)
+    setMessage('')
+    setForms((current) => ({
+      ...current,
+      [activeSection]: mapRecordToForm(activeSection, item),
+    }))
+  }
+
+  function handleCancelEdit() {
+    setEditingRecord(null)
+    setForms((current) => ({
+      ...current,
+      [activeSection]: INITIAL_FORMS[activeSection],
+    }))
+  }
+
+  async function handleSearch(event) {
+    event.preventDefault()
+
+    if (!searchTerm.trim()) {
+      loadSection(activeSection)
+      return
+    }
+
+    setLoading(true)
+    setMessage('')
+
+    try {
+      const item = await searchResource(activeSection, searchTerm)
+      setRecords((current) => ({ ...current, [activeSection]: item ? [item] : [] }))
+    } catch (error) {
+      setRecords((current) => ({ ...current, [activeSection]: [] }))
+      setMessage(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleDelete(id) {
+    setLoading(true)
+    setMessage('')
+
+    try {
+      await deleteResource(activeSection, id)
+      await loadSection(activeSection)
+      setMessage('Registro removido com sucesso.')
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <main className="app-shell">
+      <Dashboard
+        activeSection={activeSection}
+        onSelectSection={handleSectionChange}
+        sections={SECTIONS}
+        stats={stats}
+      />
+
+      <section className="workspace">
+        <WorkspaceHeader
+          loading={loading}
+          onRefresh={() => loadSection(activeSection)}
+          section={currentSection}
+        />
+
+        <div className="content-grid">
+          <SearchPanel
+            onChange={setSearchTerm}
+            onSubmit={handleSearch}
+            searchTerm={searchTerm}
+            section={currentSection}
+          />
+
+          <ResourceForm
+            editingRecord={editingRecord}
+            form={forms[activeSection]}
+            loading={loading}
+            onChange={handleFormChange}
+            onCancelEdit={handleCancelEdit}
+            onSubmit={handleSubmitForm}
+            sectionKey={activeSection}
+          />
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+
+        <Message text={message} />
+
+        <DataTable
+          items={records[activeSection]}
+          loading={loading}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+          sectionKey={activeSection}
+          title={currentSection.title}
+        />
       </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   )
+}
+
+function mapRecordToForm(sectionKey, item) {
+  if (sectionKey === 'clientes') {
+    return {
+      nome: item.nome || '',
+      email: item.email || '',
+      idade: item.idade || '',
+      senha: item.senha || '',
+    }
+  }
+
+  if (sectionKey === 'produtos') {
+    return {
+      codigoDeBarras: item.codigoDeBarras || '',
+      nome: item.nome || '',
+      preco: item.preco || '',
+      qtdeEmEstoque: item.qtdeEmEstoque || '',
+    }
+  }
+
+  return {
+    clienteId: item.cliente?.id || '',
+    valorTotal: item.valorTotal || '',
+  }
 }
 
 export default App

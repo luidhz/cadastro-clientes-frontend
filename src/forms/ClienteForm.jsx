@@ -1,0 +1,46 @@
+export function ClienteForm({ form, onChange }) {
+  return (
+    <>
+      <label>
+        Nome
+        <input
+          onChange={(event) => onChange('nome', event.target.value)}
+          placeholder="Nome do cliente"
+          required
+          value={form.nome}
+        />
+      </label>
+      <label>
+        Email
+        <input
+          onChange={(event) => onChange('email', event.target.value)}
+          placeholder="email@exemplo.com"
+          required
+          type="email"
+          value={form.email}
+        />
+      </label>
+      <label>
+        Idade
+        <input
+          min="1"
+          onChange={(event) => onChange('idade', event.target.value)}
+          placeholder="21"
+          required
+          type="number"
+          value={form.idade}
+        />
+      </label>
+      <label>
+        Senha
+        <input
+          onChange={(event) => onChange('senha', event.target.value)}
+          placeholder="Senha"
+          required
+          type="password"
+          value={form.senha}
+        />
+      </label>
+    </>
+  )
+}
