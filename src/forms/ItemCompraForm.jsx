@@ -6,7 +6,7 @@ export function ItemCompraForm({ form, onChange }) {
         <input
           min="1"
           onChange={(event) => onChange('compraId', event.target.value)}
-          placeholder="1"
+          placeholder="ID"
           required
           type="number"
           value={form.compraId}
@@ -17,7 +17,7 @@ export function ItemCompraForm({ form, onChange }) {
         <input
           min="1"
           onChange={(event) => onChange('produtoId', event.target.value)}
-          placeholder="1"
+          placeholder="ID"
           required
           type="number"
           value={form.produtoId}
@@ -28,7 +28,7 @@ export function ItemCompraForm({ form, onChange }) {
         <input
           min="1"
           onChange={(event) => onChange('quantidade', event.target.value)}
-          placeholder="2"
+          placeholder="ID"
           required
           type="number"
           value={form.quantidade}
@@ -39,7 +39,7 @@ export function ItemCompraForm({ form, onChange }) {
         <input
           min="0"
           onChange={(event) => onChange('precoUnitario', event.target.value)}
-          placeholder="49.90"
+          placeholder="0.00"
           required
           step="0.01"
           type="number"

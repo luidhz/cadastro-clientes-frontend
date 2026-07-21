@@ -25,7 +25,7 @@ export function UsuarioForm({ form, onChange }) {
         <input
           min="1"
           onChange={(event) => onChange('idade', event.target.value)}
-          placeholder="21"
+          placeholder="0"
           required
           type="number"
           value={form.idade}

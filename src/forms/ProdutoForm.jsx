@@ -5,7 +5,7 @@ export function ProdutoForm({ form, onChange }) {
         Codigo de barras
         <input
           onChange={(event) => onChange('codigoDeBarras', event.target.value)}
-          placeholder="7890000000000"
+          placeholder="0000000 000000"
           required
           value={form.codigoDeBarras}
         />
@@ -24,7 +24,7 @@ export function ProdutoForm({ form, onChange }) {
         <input
           min="0"
           onChange={(event) => onChange('preco', event.target.value)}
-          placeholder="49.90"
+          placeholder="0.00"
           required
           step="0.01"
           type="number"
@@ -36,7 +36,7 @@ export function ProdutoForm({ form, onChange }) {
         <input
           min="0"
           onChange={(event) => onChange('qtdeEmEstoque', event.target.value)}
-          placeholder="15"
+          placeholder="0"
           required
           type="number"
           value={form.qtdeEmEstoque}

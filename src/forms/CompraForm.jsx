@@ -6,7 +6,7 @@ export function CompraForm({ form, onChange }) {
         <input
           min="1"
           onChange={(event) => onChange('usuarioId', event.target.value)}
-          placeholder="1"
+          placeholder="ID"
           required
           type="number"
           value={form.usuarioId}
@@ -17,7 +17,7 @@ export function CompraForm({ form, onChange }) {
         <input
           min="0"
           onChange={(event) => onChange('valorTotal', event.target.value)}
-          placeholder="129.90"
+          placeholder="0.00"
           required
           step="0.01"
           type="number"
