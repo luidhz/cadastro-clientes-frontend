@@ -50,8 +50,8 @@ export function deleteResource(sectionKey, id) {
 export async function searchResource(sectionKey, term) {
   const cleanTerm = term.trim()
 
-  if (sectionKey === 'clientes' && cleanTerm.includes('@')) {
-    return apiRequest(`/clientes/buscar?email=${encodeURIComponent(cleanTerm)}`)
+  if (sectionKey === 'usuarios' && cleanTerm.includes('@')) {
+    return apiRequest(`/usuarios/buscar?email=${encodeURIComponent(cleanTerm)}`)
   }
 
   if (sectionKey === 'produtos') {
@@ -80,7 +80,7 @@ export async function searchResource(sectionKey, term) {
 }
 
 function buildPayload(sectionKey, form) {
-  if (sectionKey === 'clientes') {
+  if (sectionKey === 'usuarios') {
     return {
       nome: form.nome,
       email: form.email,

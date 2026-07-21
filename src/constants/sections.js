@@ -1,8 +1,8 @@
 export const SECTIONS = {
   clientes: {
-    title: 'Clientes',
-    subtitle: 'Total de clientes',
-    endpoint: '/clientes',
+    title: 'Usuários',
+    subtitle: 'Total de usuários',
+    endpoint: '/usuarios',
   },
   produtos: {
     title: 'Produtos',
