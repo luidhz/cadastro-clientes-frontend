@@ -1,4 +1,4 @@
-import { ClienteForm } from '../forms/ClienteForm'
+import { UsuarioForm } from '../forms/UsuarioForm'
 import { CompraForm } from '../forms/CompraForm'
 import { ItemCompraForm } from '../forms/ItemCompraForm'
 import { ProdutoForm } from '../forms/ProdutoForm'
@@ -16,7 +16,7 @@ export function ResourceForm({
     <form className="panel form-panel" onSubmit={onSubmit}>
       <h2>{editingRecord ? 'Editando registro' : 'Novo cadastro'}</h2>
 
-      {sectionKey === 'clientes' && <ClienteForm form={form} onChange={onChange} />}
+      {sectionKey === 'usuarios' && <UsuarioForm form={form} onChange={onChange} />}
       {sectionKey === 'produtos' && <ProdutoForm form={form} onChange={onChange} />}
       {sectionKey === 'compras' && <CompraForm form={form} onChange={onChange} />}
       {sectionKey === 'itensCompra' && <ItemCompraForm form={form} onChange={onChange} />}

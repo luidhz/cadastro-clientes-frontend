@@ -1,20 +1,20 @@
 import { useState } from 'react'
 import './App.css'
 import { SECTIONS } from './constants/sections'
-import { ClientesPage } from './pages/ClientesPage'
+import { UsuariosPage } from './pages/UsuariosPage'
 import { ComprasPage } from './pages/ComprasPage'
 import { ItensCompraPage } from './pages/ItensCompraPage'
 import { ProdutosPage } from './pages/ProdutosPage'
 
 const PAGES = {
-  clientes: ClientesPage,
+  usuarios: UsuariosPage,
   produtos: ProdutosPage,
   compras: ComprasPage,
   itensCompra: ItensCompraPage,
 }
 
 function App() {
-  const [activePage, setActivePage] = useState('clientes')
+  const [activePage, setActivePage] = useState('usuarios')
   const CurrentPage = PAGES[activePage]
 
   return (

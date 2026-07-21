@@ -1,5 +1,5 @@
 export const SECTIONS = {
-  clientes: {
+  usuarios: {
     title: 'Usuários',
     subtitle: 'Total de usuários',
     endpoint: '/usuarios',
@@ -22,7 +22,7 @@ export const SECTIONS = {
 }
 
 export const INITIAL_FORMS = {
-  clientes: {
+  usuarios: {
     nome: '',
     email: '',
     idade: '',
@@ -36,7 +36,7 @@ export const INITIAL_FORMS = {
     qtdeEmEstoque: '',
   },
   compras: {
-    clienteId: '',
+    usuarioId: '',
     valorTotal: '',
   },
   itensCompra: {

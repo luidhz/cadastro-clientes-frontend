@@ -1,11 +1,11 @@
-export function ClienteForm({ form, onChange }) {
+export function UsuarioForm({ form, onChange }) {
   return (
     <>
       <label>
         Nome
         <input
           onChange={(event) => onChange('nome', event.target.value)}
-          placeholder="Nome do cliente"
+          placeholder="Nome do usuário"
           required
           value={form.nome}
         />
@@ -44,7 +44,7 @@ export function ClienteForm({ form, onChange }) {
       <label>
         Perfil
         <select value={form.role} onChange={(event) => onChange('role', event.target.value)}>
-          <option value="USUARIO">Cliente</option>
+          <option value="USUARIO">Usuário</option>
           <option value="ADMIN">Admin</option>
         </select>
       </label>

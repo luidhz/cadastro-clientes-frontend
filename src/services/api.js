@@ -102,7 +102,7 @@ function buildPayload(sectionKey, form) {
   if (sectionKey === 'compras') {
     return {
       usuario: {
-        id: Number(form.clienteId),
+        id: Number(form.usuarioId),
       },
       valorTotal: Number(form.valorTotal),
       itens: [],

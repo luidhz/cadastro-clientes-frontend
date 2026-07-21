@@ -40,9 +40,9 @@ export function DataTable({ items, loading, onDelete, onEdit, sectionKey, title 
 
 function TableHead({ sectionKey }) {
   const headers = {
-    clientes: ['ID', 'Nome', 'Email', 'Idade', 'Ações'],
+    usuarios: ['ID', 'Nome', 'Email', 'Idade', 'Ações'],
     produtos: ['ID', 'Código', 'Produto', 'Preço', 'Estoque', 'Ações'],
-    compras: ['ID', 'Cliente', 'Data', 'Total', 'Ações'],
+    compras: ['ID', 'Usuário', 'Data', 'Total', 'Ações'],
     itensCompra: ['Compra', 'Produto', 'Quantidade', 'Preco unitario', 'Subtotal', 'Ações'],
   }
 
@@ -58,7 +58,7 @@ function TableHead({ sectionKey }) {
 }
 
 function TableCells({ item, sectionKey }) {
-  if (sectionKey === 'clientes') {
+  if (sectionKey === 'usuarios') {
     return (
       <>
         <td>{item.id}</td>
@@ -96,7 +96,7 @@ function TableCells({ item, sectionKey }) {
   return (
     <>
       <td>{item.id}</td>
-      <td>{item.usuario?.nome || `Cliente ${item.usuario?.id || '-'}`}</td>
+      <td>{item.usuario?.nome || `Usuário ${item.usuario?.id || '-'}`}</td>
       <td>{formatDate(item.dataCompra)}</td>
       <td>{formatCurrency(item.valorTotal)}</td>
     </>

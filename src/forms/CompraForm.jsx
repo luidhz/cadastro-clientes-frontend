@@ -2,14 +2,14 @@ export function CompraForm({ form, onChange }) {
   return (
     <>
       <label>
-        ID do cliente
+        ID do usuário
         <input
           min="1"
-          onChange={(event) => onChange('clienteId', event.target.value)}
+          onChange={(event) => onChange('usuarioId', event.target.value)}
           placeholder="1"
           required
           type="number"
-          value={form.clienteId}
+          value={form.usuarioId}
         />
       </label>
       <label>

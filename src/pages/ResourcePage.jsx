@@ -183,7 +183,7 @@ export function ResourcePage({ sectionKey }) {
 }
 
 function mapRecordToForm(sectionKey, item) {
-  if (sectionKey === 'clientes') {
+  if (sectionKey === 'usuarios') {
     return {
       nome: item.nome || '',
       email: item.email || '',
@@ -204,7 +204,7 @@ function mapRecordToForm(sectionKey, item) {
 
   if (sectionKey === 'compras') {
     return {
-      clienteId: item.usuario?.id || '',
+      usuarioId: item.usuario?.id || '',
       valorTotal: item.valorTotal || '',
     }
   }
