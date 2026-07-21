@@ -13,7 +13,7 @@ async function apiRequest(path, options = {}) {
 
   if (!response.ok) {
     const error = await response.json().catch(() => null)
-    throw new Error(error?.message || 'Nao foi possivel concluir a operacao.')
+    throw new Error(error?.message || 'Não foi possível concluir a operação.')
   }
 
   if (response.status === 204) {
@@ -35,14 +35,14 @@ export function createResource(sectionKey, form) {
 }
 
 export function updateResource(sectionKey, id, form) {
-  return apiRequest(`${SECTIONS[sectionKey].endpoint}/${id}`, {
+  return apiRequest(`${SECTIONS[sectionKey].endpoint}/${buildResourceId(sectionKey, id)}`, {
     method: 'PUT',
     body: JSON.stringify(buildPayload(sectionKey, form)),
   })
 }
 
 export function deleteResource(sectionKey, id) {
-  return apiRequest(`${SECTIONS[sectionKey].endpoint}/${id}`, {
+  return apiRequest(`${SECTIONS[sectionKey].endpoint}/${buildResourceId(sectionKey, id)}`, {
     method: 'DELETE',
   })
 }
@@ -66,6 +66,16 @@ export async function searchResource(sectionKey, term) {
     return apiRequest(`/produtos/buscar?codigo-de-barras=${encodeURIComponent(cleanTerm)}`)
   }
 
+  if (sectionKey === 'itensCompra') {
+    const [compraId, produtoId] = cleanTerm.split(/[,\s/;-]+/)
+
+    if (!compraId || !produtoId) {
+      throw new Error('Digite o ID da compra e o ID do produto. Exemplo: 1/2')
+    }
+
+    return apiRequest(`/itens-compra/${compraId}/${produtoId}`)
+  }
+
   return apiRequest(`${SECTIONS[sectionKey].endpoint}/${cleanTerm}`)
 }
 
@@ -76,6 +86,7 @@ function buildPayload(sectionKey, form) {
       email: form.email,
       idade: Number(form.idade),
       senha: form.senha,
+      role: form.role,
     }
   }
 
@@ -88,11 +99,32 @@ function buildPayload(sectionKey, form) {
     }
   }
 
-  return {
-    cliente: {
-      id: Number(form.clienteId),
-    },
-    valorTotal: Number(form.valorTotal),
-    itens: [],
+  if (sectionKey === 'compras') {
+    return {
+      usuario: {
+        id: Number(form.clienteId),
+      },
+      valorTotal: Number(form.valorTotal),
+      itens: [],
+    }
   }
+
+  return {
+    compra: {
+      id: Number(form.compraId),
+    },
+    produto: {
+      id: Number(form.produtoId),
+    },
+    quantidade: Number(form.quantidade),
+    precoUnitario: Number(form.precoUnitario),
+  }
+}
+
+function buildResourceId(sectionKey, id) {
+  if (sectionKey === 'itensCompra') {
+    return `${id.compraId}/${id.produtoId}`
+  }
+
+  return id
 }

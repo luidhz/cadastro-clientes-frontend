@@ -41,6 +41,13 @@ export function ClienteForm({ form, onChange }) {
           value={form.senha}
         />
       </label>
+      <label>
+        Perfil
+        <select value={form.role} onChange={(event) => onChange('role', event.target.value)}>
+          <option value="USUARIO">Cliente</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+      </label>
     </>
   )
 }

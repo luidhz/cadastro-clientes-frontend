@@ -16,14 +16,14 @@ export function DataTable({ items, loading, onDelete, onEdit, sectionKey, title 
             <TableHead sectionKey={sectionKey} />
             <tbody>
               {items.map((item) => (
-                <tr key={item.id}>
+                <tr key={getRowKey(sectionKey, item)}>
                   <TableCells item={item} sectionKey={sectionKey} />
                   <td>
                     <div className="table-actions">
                       <button className="ghost-button small-button" onClick={() => onEdit(item)} type="button">
                         Editar
                       </button>
-                      <button className="danger-button" onClick={() => onDelete(item.id)} type="button">
+                      <button className="danger-button" onClick={() => onDelete(item)} type="button">
                         Excluir
                       </button>
                     </div>
@@ -40,9 +40,10 @@ export function DataTable({ items, loading, onDelete, onEdit, sectionKey, title 
 
 function TableHead({ sectionKey }) {
   const headers = {
-    clientes: ['ID', 'Nome', 'Email', 'Idade', 'Acoes'],
-    produtos: ['ID', 'Codigo', 'Produto', 'Preco', 'Estoque', 'Acoes'],
-    compras: ['ID', 'Cliente', 'Data', 'Total', 'Acoes'],
+    clientes: ['ID', 'Nome', 'Email', 'Idade', 'Ações'],
+    produtos: ['ID', 'Código', 'Produto', 'Preço', 'Estoque', 'Ações'],
+    compras: ['ID', 'Cliente', 'Data', 'Total', 'Ações'],
+    itensCompra: ['Compra', 'Produto', 'Quantidade', 'Preco unitario', 'Subtotal', 'Ações'],
   }
 
   return (
@@ -80,12 +81,32 @@ function TableCells({ item, sectionKey }) {
     )
   }
 
+  if (sectionKey === 'itensCompra') {
+    return (
+      <>
+        <td>{item.compra?.id || '-'}</td>
+        <td>{item.produto?.nome || `Produto ${item.produto?.id || '-'}`}</td>
+        <td>{item.quantidade}</td>
+        <td>{formatCurrency(item.precoUnitario)}</td>
+        <td>{formatCurrency(item.subTotal)}</td>
+      </>
+    )
+  }
+
   return (
     <>
       <td>{item.id}</td>
-      <td>{item.cliente?.nome || `Cliente ${item.cliente?.id || '-'}`}</td>
+      <td>{item.usuario?.nome || `Cliente ${item.usuario?.id || '-'}`}</td>
       <td>{formatDate(item.dataCompra)}</td>
       <td>{formatCurrency(item.valorTotal)}</td>
     </>
   )
+}
+
+function getRowKey(sectionKey, item) {
+  if (sectionKey === 'itensCompra') {
+    return `${item.compra?.id || 'compra'}-${item.produto?.id || 'produto'}`
+  }
+
+  return item.id
 }

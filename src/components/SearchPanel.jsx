@@ -1,12 +1,14 @@
 export function SearchPanel({ onChange, onSubmit, searchTerm, section }) {
+  const isItemCompra = section.endpoint === '/itens-compra'
+
   return (
     <form className="panel search-panel" onSubmit={onSubmit}>
       <h2>Pesquisar {section.title.toLowerCase()}</h2>
       <label>
-        ID, email ou codigo
+        {isItemCompra ? 'ID da compra e ID do produto' : 'ID, email ou codigo'}
         <input
           onChange={(event) => onChange(event.target.value)}
-          placeholder="Digite para pesquisar"
+          placeholder={isItemCompra ? 'Exemplo: 1/2' : 'Digite para pesquisar'}
           value={searchTerm}
         />
       </label>

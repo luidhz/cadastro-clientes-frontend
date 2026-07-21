@@ -3,19 +3,21 @@ export const SECTIONS = {
     title: 'Clientes',
     subtitle: 'Total de clientes',
     endpoint: '/clientes',
-    accent: 'blue',
   },
   produtos: {
     title: 'Produtos',
     subtitle: 'Produtos cadastrados',
     endpoint: '/produtos',
-    accent: 'green',
   },
   compras: {
     title: 'Compras',
     subtitle: 'Historico de compras',
     endpoint: '/compras',
-    accent: 'orange',
+  },
+  itensCompra: {
+    title: 'Itens da compra',
+    subtitle: 'Produtos vinculados as compras',
+    endpoint: '/itens-compra',
   },
 }
 
@@ -25,6 +27,7 @@ export const INITIAL_FORMS = {
     email: '',
     idade: '',
     senha: '',
+    role: 'USUARIO',
   },
   produtos: {
     codigoDeBarras: '',
@@ -35,5 +38,11 @@ export const INITIAL_FORMS = {
   compras: {
     clienteId: '',
     valorTotal: '',
+  },
+  itensCompra: {
+    compraId: '',
+    produtoId: '',
+    quantidade: '',
+    precoUnitario: '',
   },
 }

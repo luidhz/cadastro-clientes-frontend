@@ -2,7 +2,7 @@ export function ProdutoForm({ form, onChange }) {
   return (
     <>
       <label>
-        Código de barras
+        Codigo de barras
         <input
           onChange={(event) => onChange('codigoDeBarras', event.target.value)}
           placeholder="7890000000000"
@@ -20,7 +20,7 @@ export function ProdutoForm({ form, onChange }) {
         />
       </label>
       <label>
-        Preço
+        Preco
         <input
           min="0"
           onChange={(event) => onChange('preco', event.target.value)}
