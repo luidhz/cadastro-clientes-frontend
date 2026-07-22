@@ -13,7 +13,7 @@ import {
   updateResource,
 } from '../services/api'
 
-export function ResourcePage({ sectionKey }) {
+export function ResourcePage({ sectionKey, canManage }) {
   const [records, setRecords] = useState([])
   const [form, setForm] = useState(INITIAL_FORMS[sectionKey])
   const [searchTerm, setSearchTerm] = useState('')
@@ -157,20 +157,23 @@ export function ResourcePage({ sectionKey }) {
           section={section}
         />
 
-        <ResourceForm
-          editingRecord={editingRecord}
-          form={form}
-          loading={loading}
-          onChange={handleFormChange}
-          onCancelEdit={handleCancelEdit}
-          onSubmit={handleSubmitForm}
-          sectionKey={sectionKey}
-        />
+        {canManage && (
+          <ResourceForm
+            editingRecord={editingRecord}
+            form={form}
+            loading={loading}
+            onChange={handleFormChange}
+            onCancelEdit={handleCancelEdit}
+            onSubmit={handleSubmitForm}
+            sectionKey={sectionKey}
+          />
+        )}
       </div>
 
       <Message text={message} />
 
       <DataTable
+        canManage={canManage}
         items={records}
         loading={loading}
         onDelete={handleDelete}

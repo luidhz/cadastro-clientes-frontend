@@ -1,5 +1,6 @@
 import { ResourcePage } from './ResourcePage'
 
-export function UsuariosPage() {
-  return <ResourcePage sectionKey="usuarios" />
+export function UsuariosPage({ canManage }) {
+  return <ResourcePage sectionKey="usuarios" canManage={canManage} />
 }
+
