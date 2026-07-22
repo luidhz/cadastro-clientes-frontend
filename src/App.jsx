@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { SECTIONS } from './constants/sections'
 import { ComprasPage } from './pages/ComprasPage'
@@ -22,6 +22,26 @@ function App() {
   })
 
   const isAdmin = usuarioLogado?.role === 'ADMIN'
+  const visibleSections = Object.entries(SECTIONS).filter(([sectionKey]) => {
+    if (isAdmin) {
+      return true
+    }
+
+    return sectionKey === 'compras' || sectionKey === 'itensCompra'
+  })
+
+  useEffect(() => {
+    if (!usuarioLogado) {
+      return
+    }
+
+    const canSeeActivePage = visibleSections.some(([sectionKey]) => sectionKey === activePage)
+
+    if (!canSeeActivePage) {
+      setActivePage(visibleSections[0][0])
+    }
+  }, [activePage, usuarioLogado, visibleSections])
+
   const CurrentPage = PAGES[activePage]
 
   function handleLogin(usuario) {
@@ -50,7 +70,7 @@ function App() {
         </div>
 
         <nav className="page-nav">
-          {Object.entries(SECTIONS).map(([sectionKey, section]) => (
+          {visibleSections.map(([sectionKey, section]) => (
             <button
               className={activePage === sectionKey ? 'nav-button active' : 'nav-button'}
               key={sectionKey}
