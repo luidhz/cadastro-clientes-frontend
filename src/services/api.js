@@ -2,14 +2,34 @@ import { SECTIONS } from '../constants/sections'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
+function getToken() {
+  const salvo = localStorage.getItem('usuarioLogado')
+  if (!salvo) return null
+
+  try {
+    return JSON.parse(salvo).token || null
+  } catch {
+    return null
+  }
+}
+
 async function apiRequest(path, options = {}) {
+  const token = getToken()
+
   const response = await fetch(`${API_URL}${path}`, {
     headers: {
       'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
       ...options.headers,
     },
     ...options,
   })
+
+  if (response.status === 401 || response.status === 403) {
+    localStorage.removeItem('usuarioLogado')
+    window.location.reload()
+    throw new Error('Sessão expirada. Faça login novamente.')
+  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => null)
