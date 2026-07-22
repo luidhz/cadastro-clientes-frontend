@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import './App.css'
 import { SECTIONS } from './constants/sections'
-import { UsuariosPage } from './pages/UsuariosPage'
 import { ComprasPage } from './pages/ComprasPage'
 import { ItensCompraPage } from './pages/ItensCompraPage'
+import { LoginPage } from './pages/LoginPage'
 import { ProdutosPage } from './pages/ProdutosPage'
+import { UsuariosPage } from './pages/UsuariosPage'
 
 const PAGES = {
   usuarios: UsuariosPage,
@@ -15,13 +16,37 @@ const PAGES = {
 
 function App() {
   const [activePage, setActivePage] = useState('usuarios')
+  const [usuarioLogado, setUsuarioLogado] = useState(() => {
+    const salvo = localStorage.getItem('usuarioLogado')
+    return salvo ? JSON.parse(salvo) : null
+  })
+
+  const isAdmin = usuarioLogado?.role === 'ADMIN'
   const CurrentPage = PAGES[activePage]
+
+  function handleLogin(usuario) {
+    localStorage.setItem('usuarioLogado', JSON.stringify(usuario))
+    setUsuarioLogado(usuario)
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('usuarioLogado')
+    setUsuarioLogado(null)
+    setActivePage('usuarios')
+  }
+
+  if (!usuarioLogado) {
+    return <LoginPage onLogin={handleLogin} />
+  }
 
   return (
     <main className="app-shell">
       <aside className="sidebar">
         <div>
           <h1>Sistema de Cadastros</h1>
+          <p className="logged-user">
+            {usuarioLogado.nome || usuarioLogado.email} - {usuarioLogado.role}
+          </p>
         </div>
 
         <nav className="page-nav">
@@ -36,9 +61,13 @@ function App() {
             </button>
           ))}
         </nav>
+
+        <button className="logout-button" onClick={handleLogout} type="button">
+          Sair
+        </button>
       </aside>
 
-      <CurrentPage />
+      <CurrentPage canManage={isAdmin} />
     </main>
   )
 }
