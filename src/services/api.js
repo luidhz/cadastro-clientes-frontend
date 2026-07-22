@@ -25,11 +25,16 @@ async function apiRequest(path, options = {}) {
     ...options,
   })
 
-  if (response.status === 401 || response.status === 403) {
-    localStorage.removeItem('usuarioLogado')
-    window.location.reload()
-    throw new Error('Sessão expirada. Faça login novamente.')
-  }
+  if (response.status === 401) {
+  localStorage.removeItem('usuarioLogado')
+  window.location.reload()
+  throw new Error('Sessao expirada. Faca login novamente.')
+}
+
+if (response.status === 403) {
+  throw new Error('Voce nao tem permissao para executar esta acao.')
+}
+
 
   if (!response.ok) {
     const error = await response.json().catch(() => null)

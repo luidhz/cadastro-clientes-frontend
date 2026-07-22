@@ -3,21 +3,29 @@ export const SECTIONS = {
     title: 'Usuários',
     subtitle: 'Total de usuários',
     endpoint: '/usuarios',
+    searchLabel: 'ID ou email do usuario',
+    searchPlaceholder: 'Digite para pesquisar'
   },
   produtos: {
     title: 'Produtos',
     subtitle: 'Produtos cadastrados',
     endpoint: '/produtos',
+    searchLabel: 'ID ou código de barras',
+    searchPlaceholder: 'Digite para pesquisar'
   },
   compras: {
     title: 'Compras',
     subtitle: 'Historico de compras',
     endpoint: '/compras',
+    searchLabel: 'ID da compra',
+    searchPlaceholder: 'Digite para pesquisar'
   },
   itensCompra: {
     title: 'Itens da compra',
     subtitle: 'Produtos vinculados as compras',
     endpoint: '/itens-compra',
+    searchLabel: 'ID da compra e ID do produto',
+    searchPlaceholder: 'Digite para pesquisar'
   },
 }
 
