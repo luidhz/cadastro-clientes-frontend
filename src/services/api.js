@@ -60,14 +60,14 @@ export function createResource(sectionKey, form) {
 }
 
 export function updateResource(sectionKey, id, form) {
-  return apiRequest(`${SECTIONS[sectionKey].endpoint}/${buildResourceId(sectionKey, id)}`, {
+  return apiRequest(`${SECTIONS[sectionKey].endpoint}/${id}`, {
     method: 'PUT',
     body: JSON.stringify(buildPayload(sectionKey, form)),
   })
 }
 
 export function deleteResource(sectionKey, id) {
-  return apiRequest(`${SECTIONS[sectionKey].endpoint}/${buildResourceId(sectionKey, id)}`, {
+  return apiRequest(`${SECTIONS[sectionKey].endpoint}/${id}`, {
     method: 'DELETE',
   })
 }
@@ -91,16 +91,6 @@ export async function searchResource(sectionKey, term) {
     return apiRequest(`/produtos/buscar?codigo-de-barras=${encodeURIComponent(cleanTerm)}`)
   }
 
-  if (sectionKey === 'itensCompra') {
-    const [compraId, produtoId] = cleanTerm.split(/[,\s/;-]+/)
-
-    if (!compraId || !produtoId) {
-      throw new Error('Digite o ID da compra e o ID do produto. Exemplo: 1/2')
-    }
-
-    return apiRequest(`/itens-compra/${compraId}/${produtoId}`)
-  }
-
   return apiRequest(`${SECTIONS[sectionKey].endpoint}/${cleanTerm}`)
 }
 
@@ -115,41 +105,62 @@ function buildPayload(sectionKey, form) {
     }
   }
 
-  if (sectionKey === 'produtos') {
-    return {
-      codigoDeBarras: form.codigoDeBarras,
-      nome: form.nome,
-      preco: Number(form.preco),
-      qtdeEmEstoque: Number(form.qtdeEmEstoque),
-    }
-  }
-
-  if (sectionKey === 'compras') {
-    return {
-      usuario: {
-        id: Number(form.usuarioId),
-      },
-      valorTotal: Number(form.valorTotal),
-      itens: [],
-    }
-  }
-
   return {
-    compra: {
-      id: Number(form.compraId),
-    },
-    produto: {
-      id: Number(form.produtoId),
-    },
-    quantidade: Number(form.quantidade),
-    precoUnitario: Number(form.precoUnitario),
+    codigoDeBarras: form.codigoDeBarras,
+    nome: form.nome,
+    preco: Number(form.preco),
+    qtdeEmEstoque: Number(form.qtdeEmEstoque),
   }
 }
 
-function buildResourceId(sectionKey, id) {
-  if (sectionKey === 'itensCompra') {
-    return `${id.compraId}/${id.produtoId}`
-  }
+// ---- Compras (fluxo dedicado com carrinho de itens) ----
 
-  return id
+export function listCompras() {
+  return apiRequest('/compras')
+}
+
+export function getCompra(id) {
+  return apiRequest(`/compras/${id}`)
+}
+
+export function listProdutosCatalogo() {
+  return apiRequest('/produtos')
+}
+
+export function listUsuariosCatalogo() {
+  return apiRequest('/usuarios')
+}
+
+export function buildCompraPayload(usuarioId, itens) {
+  return {
+    usuario: {
+      id: Number(usuarioId),
+    },
+    itens: itens.map((item) => ({
+      produto: {
+        id: Number(item.produtoId),
+      },
+      quantidade: Number(item.quantidade),
+    })),
+  }
+}
+
+export function createCompra(usuarioId, itens) {
+  return apiRequest('/compras', {
+    method: 'POST',
+    body: JSON.stringify(buildCompraPayload(usuarioId, itens)),
+  })
+}
+
+export function updateCompra(id, usuarioId, itens) {
+  return apiRequest(`/compras/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(buildCompraPayload(usuarioId, itens)),
+  })
+}
+
+export function deleteCompra(id) {
+  return apiRequest(`/compras/${id}`, {
+    method: 'DELETE',
+  })
 }

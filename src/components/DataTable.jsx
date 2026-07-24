@@ -1,4 +1,4 @@
-import { formatCurrency, formatDate } from '../utils/formatters'
+import { formatCurrency } from '../utils/formatters'
 
 export function DataTable({ canManage, items, loading, onDelete, onEdit, sectionKey, title }) {
   return (
@@ -16,7 +16,7 @@ export function DataTable({ canManage, items, loading, onDelete, onEdit, section
             <TableHead canManage={canManage} sectionKey={sectionKey} />
             <tbody>
               {items.map((item) => (
-                <tr key={getRowKey(sectionKey, item)}>
+                <tr key={item.id}>
                   <TableCells item={item} sectionKey={sectionKey} />
 
                   {canManage && (
@@ -45,8 +45,6 @@ function TableHead({ canManage, sectionKey }) {
   const headers = {
     usuarios: ['ID', 'Nome', 'Email', 'Idade'],
     produtos: ['ID', 'Codigo', 'Produto', 'Preco', 'Estoque'],
-    compras: ['ID', 'Usuario', 'Data', 'Total'],
-    itensCompra: ['Compra', 'Produto', 'Quantidade', 'Preco unitario', 'Subtotal'],
   }
 
   return (
@@ -73,44 +71,13 @@ function TableCells({ item, sectionKey }) {
     )
   }
 
-  if (sectionKey === 'produtos') {
-    return (
-      <>
-        <td>{item.id}</td>
-        <td>{item.codigoDeBarras}</td>
-        <td>{item.nome}</td>
-        <td>{formatCurrency(item.preco)}</td>
-        <td>{item.qtdeEmEstoque}</td>
-      </>
-    )
-  }
-
-  if (sectionKey === 'itensCompra') {
-    return (
-      <>
-        <td>{item.compra?.id || '-'}</td>
-        <td>{item.produto?.nome || `Produto ${item.produto?.id || '-'}`}</td>
-        <td>{item.quantidade}</td>
-        <td>{formatCurrency(item.precoUnitario)}</td>
-        <td>{formatCurrency(item.subTotal)}</td>
-      </>
-    )
-  }
-
   return (
     <>
       <td>{item.id}</td>
-      <td>{item.usuario?.nome || `Usuario ${item.usuario?.id || '-'}`}</td>
-      <td>{formatDate(item.dataCompra)}</td>
-      <td>{formatCurrency(item.valorTotal)}</td>
+      <td>{item.codigoDeBarras}</td>
+      <td>{item.nome}</td>
+      <td>{formatCurrency(item.preco)}</td>
+      <td>{item.qtdeEmEstoque}</td>
     </>
   )
-}
-
-function getRowKey(sectionKey, item) {
-  if (sectionKey === 'itensCompra') {
-    return `${item.compra?.id || 'compra'}-${item.produto?.id || 'produto'}`
-  }
-
-  return item.id
 }

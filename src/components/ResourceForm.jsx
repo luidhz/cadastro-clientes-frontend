@@ -1,6 +1,4 @@
 import { UsuarioForm } from '../forms/UsuarioForm'
-import { CompraForm } from '../forms/CompraForm'
-import { ItemCompraForm } from '../forms/ItemCompraForm'
 import { ProdutoForm } from '../forms/ProdutoForm'
 
 export function ResourceForm({
@@ -18,8 +16,6 @@ export function ResourceForm({
 
       {sectionKey === 'usuarios' && <UsuarioForm form={form} onChange={onChange} />}
       {sectionKey === 'produtos' && <ProdutoForm form={form} onChange={onChange} />}
-      {sectionKey === 'compras' && <CompraForm form={form} onChange={onChange} />}
-      {sectionKey === 'itensCompra' && <ItemCompraForm form={form} onChange={onChange} />}
 
       <div className="button-row">
         <button disabled={loading} type="submit">

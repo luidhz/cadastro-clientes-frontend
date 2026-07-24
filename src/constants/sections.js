@@ -13,20 +13,6 @@ export const SECTIONS = {
     searchLabel: 'ID ou código de barras',
     searchPlaceholder: 'Digite para pesquisar'
   },
-  compras: {
-    title: 'Compras',
-    subtitle: 'Historico de compras',
-    endpoint: '/compras',
-    searchLabel: 'ID da compra',
-    searchPlaceholder: 'Digite para pesquisar'
-  },
-  itensCompra: {
-    title: 'Itens da compra',
-    subtitle: 'Produtos vinculados as compras',
-    endpoint: '/itens-compra',
-    searchLabel: 'ID da compra e ID do produto',
-    searchPlaceholder: 'Digite para pesquisar'
-  },
 }
 
 export const INITIAL_FORMS = {
@@ -42,15 +28,5 @@ export const INITIAL_FORMS = {
     nome: '',
     preco: '',
     qtdeEmEstoque: '',
-  },
-  compras: {
-    usuarioId: '',
-    valorTotal: '',
-  },
-  itensCompra: {
-    compraId: '',
-    produtoId: '',
-    quantidade: '',
-    precoUnitario: '',
   },
 }

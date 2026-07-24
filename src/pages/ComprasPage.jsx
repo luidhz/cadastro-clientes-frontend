@@ -1,5 +1,10 @@
-import { ResourcePage } from './ResourcePage'
+import { ComprasAdmin } from '../components/ComprasAdmin'
+import { ComprasUsuario } from '../components/ComprasUsuario'
 
-export function ComprasPage({ canManage }) {
-  return <ResourcePage sectionKey="compras" canManage={canManage}/>
+export function ComprasPage({ canManage, usuarioLogado }) {
+  if (canManage) {
+    return <ComprasAdmin />
+  }
+
+  return <ComprasUsuario usuarioLogado={usuarioLogado} />
 }

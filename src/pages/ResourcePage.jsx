@@ -81,7 +81,7 @@ export function ResourcePage({ sectionKey, canManage }) {
 
     try {
       if (editingRecord) {
-        await updateResource(sectionKey, getRecordIdentifier(sectionKey, editingRecord), form)
+        await updateResource(sectionKey, editingRecord.id, form)
       } else {
         await createResource(sectionKey, form)
       }
@@ -135,7 +135,7 @@ export function ResourcePage({ sectionKey, canManage }) {
     setMessage('')
 
     try {
-      await deleteResource(sectionKey, getRecordIdentifier(sectionKey, item))
+      await deleteResource(sectionKey, item.id)
       await loadRecords()
       setMessage('Registro removido com sucesso.')
     } catch (error) {
@@ -196,37 +196,10 @@ function mapRecordToForm(sectionKey, item) {
     }
   }
 
-  if (sectionKey === 'produtos') {
-    return {
-      codigoDeBarras: item.codigoDeBarras || '',
-      nome: item.nome || '',
-      preco: item.preco || '',
-      qtdeEmEstoque: item.qtdeEmEstoque || '',
-    }
-  }
-
-  if (sectionKey === 'compras') {
-    return {
-      usuarioId: item.usuario?.id || '',
-      valorTotal: item.valorTotal || '',
-    }
-  }
-
   return {
-    compraId: item.compra?.id || '',
-    produtoId: item.produto?.id || '',
-    quantidade: item.quantidade || '',
-    precoUnitario: item.precoUnitario || '',
+    codigoDeBarras: item.codigoDeBarras || '',
+    nome: item.nome || '',
+    preco: item.preco || '',
+    qtdeEmEstoque: item.qtdeEmEstoque || '',
   }
-}
-
-function getRecordIdentifier(sectionKey, item) {
-  if (sectionKey === 'itensCompra') {
-    return {
-      compraId: item.compra?.id,
-      produtoId: item.produto?.id,
-    }
-  }
-
-  return item.id
 }

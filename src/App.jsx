@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { SECTIONS } from './constants/sections'
 import { ComprasPage } from './pages/ComprasPage'
-import { ItensCompraPage } from './pages/ItensCompraPage'
 import { LoginPage } from './pages/LoginPage'
 import { ProdutosPage } from './pages/ProdutosPage'
 import { UsuariosPage } from './pages/UsuariosPage'
@@ -11,24 +10,22 @@ const PAGES = {
   usuarios: UsuariosPage,
   produtos: ProdutosPage,
   compras: ComprasPage,
-  itensCompra: ItensCompraPage,
 }
 
+const COMPRAS_NAV_ITEM = ['compras', { title: 'Compras' }]
+
 function App() {
-  const [activePage, setActivePage] = useState('usuarios')
+  const [activePage, setActivePage] = useState('compras')
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
     const salvo = localStorage.getItem('usuarioLogado')
     return salvo ? JSON.parse(salvo) : null
   })
 
   const isAdmin = usuarioLogado?.role === 'ADMIN'
-  const visibleSections = Object.entries(SECTIONS).filter(([sectionKey]) => {
-    if (isAdmin) {
-      return true
-    }
 
-    return sectionKey === 'compras' || sectionKey === 'itensCompra'
-  })
+  // Cadastros (usuarios/produtos) sao administrativos: so o admin ve no menu.
+  const cadastroSections = isAdmin ? Object.entries(SECTIONS) : []
+  const visibleSections = [...cadastroSections, COMPRAS_NAV_ITEM]
 
   useEffect(() => {
     if (!usuarioLogado) {
@@ -38,21 +35,23 @@ function App() {
     const canSeeActivePage = visibleSections.some(([sectionKey]) => sectionKey === activePage)
 
     if (!canSeeActivePage) {
-      setActivePage(visibleSections[0][0])
+      setActivePage('compras')
     }
-  }, [activePage, usuarioLogado, visibleSections])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePage, usuarioLogado])
 
   const CurrentPage = PAGES[activePage]
 
   function handleLogin(usuario) {
     localStorage.setItem('usuarioLogado', JSON.stringify(usuario))
     setUsuarioLogado(usuario)
+    setActivePage('compras')
   }
 
   function handleLogout() {
     localStorage.removeItem('usuarioLogado')
     setUsuarioLogado(null)
-    setActivePage('usuarios')
+    setActivePage('compras')
   }
 
   if (!usuarioLogado) {
@@ -87,7 +86,7 @@ function App() {
         </button>
       </aside>
 
-      <CurrentPage canManage={isAdmin} />
+      <CurrentPage canManage={isAdmin} usuarioLogado={usuarioLogado} />
     </main>
   )
 }
