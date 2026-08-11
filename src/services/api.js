@@ -1,6 +1,6 @@
 import { SECTIONS } from '../constants/sections'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://cadastro-clientes-spring-m81bl0-cb8c34-144-126-149-173.sslip.io'
+const API_URL = import.meta.env.VITE_API_URL || 'http://cadastro-clientes-spring-m81bl0-cb8c34-144-126-149-173.sslip.io/auth/login'
 
 function getToken() {
   const salvo = localStorage.getItem('usuarioLogado')
