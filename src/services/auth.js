@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://cadastro-clientes-jdbc-backend-kb0vwt-c1dc7a-144-126-149-173.sslip.io'
+const API_URL = import.meta.env.VITE_API_URL || 'http://cadastro-clientes-jdbc-backend-kb0vwt-10ba91-144-126-149-173.sslip.io'
 
 export async function login(email, senha) {
   const response = await fetch(`${API_URL}/auth/login`, {
